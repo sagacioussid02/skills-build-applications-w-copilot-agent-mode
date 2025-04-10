@@ -7,37 +7,42 @@ def populate_database():
 
     # Populate users
     for user_data in test_data['users']:
-        User.objects.create(
+        User.objects.update_or_create(
             id=user_data['id'],
-            username=user_data['username'],
-            email=user_data['email'],
-            password=user_data['password']
+            defaults={
+                'email': user_data['email'],
+                'name': user_data['username']
+            }
         )
 
     # Populate teams
     for team_data in test_data['teams']:
-        team = Team.objects.create(
+        team, created = Team.objects.update_or_create(
             id=team_data['id'],
-            name=team_data['name']
+            defaults={'name': team_data['name']}
         )
         team.members.set(team_data['members'])
 
     # Populate activities
     for activity_data in test_data['activities']:
-        Activity.objects.create(
+        Activity.objects.update_or_create(
             id=activity_data['id'],
-            user_id=activity_data['user_id'],
-            activity_type=activity_data['activity_type'],
-            duration=activity_data['duration'],
-            calories_burned=activity_data['calories_burned'],
-            date=activity_data['date']
+            defaults={
+                'user_id': activity_data['user_id'],
+                'activity_type': activity_data['name'],
+                'duration': activity_data.get('duration', 0),
+                'date': activity_data.get('date', '2025-04-10')  # Default to current date if missing
+            }
         )
 
     # Populate leaderboard
     for leaderboard_data in test_data['leaderboard']:
-        Leaderboard.objects.create(
-            user_id=leaderboard_data['user_id'],
-            points=leaderboard_data['points']
+        Leaderboard.objects.update_or_create(
+            id=leaderboard_data['id'],
+            defaults={
+                'team_id': leaderboard_data['team'],
+                'score': leaderboard_data['points']
+            }
         )
 
 class Command(BaseCommand):

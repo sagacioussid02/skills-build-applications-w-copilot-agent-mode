@@ -1,14 +1,13 @@
-from djongo import models
-from djongo.models import ObjectIdField
+from django.db import models
 
 class User(models.Model):
-    id = ObjectIdField(primary_key=True)
+    id = models.AutoField(primary_key=True)  # Replaced ObjectIdField with AutoField
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Team(models.Model):
-    members = models.ArrayField(model_container=User)
+    members = models.ManyToManyField(User, related_name='teams')
     name = models.CharField(max_length=255)
 
 class Activity(models.Model):
