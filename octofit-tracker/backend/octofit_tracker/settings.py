@@ -17,9 +17,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'octofit',
+    'octofit_tracker.apps.OctofitTrackerConfig',
 ]
 
-INSTALLED_APPS += ['octofit_tracker']
+INSTALLED_APPS += [
+    'corsheaders',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,9 +80,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-INSTALLED_APPS += ['corsheaders']
-
-MIDDLEWARE.insert(1, 'corsheaders.middleware.CorsMiddleware')
+MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -2,6 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+sys.path.insert(0, '/workspaces/skills-build-applications-w-copilot-agent-mode/octofit-tracker/backend')
 
 
 def main():
