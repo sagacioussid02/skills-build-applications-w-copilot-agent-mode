@@ -1,32 +1,32 @@
 from django.core.management.base import BaseCommand
-from octofit_tracker.models import User, Team, Activity, Leaderboard, Workout
+from octofit_tracker.models import User, Activity, Team, Leaderboard, Workout
+from octofit_tracker.test_data import get_test_data
 
 class Command(BaseCommand):
     help = 'Populate the database with test data'
 
     def handle(self, *args, **kwargs):
-        # Create test users
-        user1 = User.objects.create(email='user1@example.com', name='User One')
-        user2 = User.objects.create(email='user2@example.com', name='User Two')
+        test_data = get_test_data()
 
-        # Create test teams
-        team1 = Team.objects.create(name='Team Alpha')
-        team2 = Team.objects.create(name='Team Beta')
+        # Populate users
+        for user_data in test_data['users']:
+            User.objects.get_or_create(**user_data)
 
-        # Add users to teams
-        team1.members.add(user1)
-        team2.members.add(user2)
+        # Populate activities
+        for activity_data in test_data['activities']:
+            Activity.objects.get_or_create(**activity_data)
 
-        # Create test activities
-        Activity.objects.create(user=user1, activity_type='Running', duration=30, date='2025-04-09')
-        Activity.objects.create(user=user2, activity_type='Cycling', duration=45, date='2025-04-08')
+        # Populate teams
+        for team_data in test_data['teams']:
+            team, created = Team.objects.get_or_create(id=team_data['id'], name=team_data['name'])
+            team.members.set(team_data['members'])
 
-        # Create test leaderboard entries
-        Leaderboard.objects.create(team=team1, score=100)
-        Leaderboard.objects.create(team=team2, score=80)
+        # Populate leaderboard
+        for leaderboard_data in test_data['leaderboard']:
+            Leaderboard.objects.get_or_create(**leaderboard_data)
 
-        # Create test workouts
-        Workout.objects.create(name='Morning Run', description='A quick morning run to start the day')
-        Workout.objects.create(name='Evening Yoga', description='Relaxing yoga session in the evening')
+        # Populate workouts
+        for workout_data in test_data.get('workouts', []):
+            Workout.objects.get_or_create(**workout_data)
 
-        self.stdout.write(self.style.SUCCESS('Database populated with test data'))
+        self.stdout.write(self.style.SUCCESS('Database populated with test data.'))

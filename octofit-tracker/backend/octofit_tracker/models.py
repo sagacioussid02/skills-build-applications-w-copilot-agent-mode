@@ -20,5 +20,8 @@ class Leaderboard(models.Model):
     score = models.IntegerField()
 
 class Workout(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workout_type = models.CharField(max_length=255)
+    duration = models.IntegerField()
+    calories_burned = models.IntegerField()
+    date = models.DateField()
